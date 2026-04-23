@@ -1,0 +1,13 @@
+{
+  "common": { "appName": "选举流程助理", "loading": "加载中…", "error": "出现错误", "retry": "重试", "close": "关闭", "back": "返回", "next": "下一步", "submit": "提交", "cancel": "取消", "save": "保存", "learnMore": "了解更多", "tellMeMore": "告诉我更多", "keepItSimple": "简单说明", "skipToMain": "跳至主要内容", "noResults": "未找到结果", "optional": "可选" },
+  "nav": { "home": "主页", "chat": "询问助理", "voter": "选民登记", "pollingPlaces": "查找投票站", "timeline": "选举时间表", "representatives": "我的代表", "guide": "选民指南" },
+  "home": { "hero": "您的智能选举指南", "heroSub": "为选举流程的每个阶段提供个性化的逐步指导。", "startChat": "提问", "enterAddress": "输入您的地址以开始", "quickActions": "快速操作" },
+  "registration": { "title": "选民登记", "checkStatus": "检查我的登记状态", "registerNow": "立即登记投票", "deadline": "登记截止日期：{date}", "registered": "您已登记投票！", "notRegistered": "您目前尚未登记。", "unknown": "请输入您的地址以检查登记状态。", "addressLabel": "您的地址", "addressPlaceholder": "主街123号，城市，州，邮编", "checking": "正在检查登记状态…" },
+  "timeline": { "title": "选举时间表", "subtitle": "您所在地区的重要日期", "addToCalendar": "添加到日历", "downloadICS": "下载 .ics 文件", "daysLeft": "剩余 {days} 天", "today": "今天", "past": "过去", "urgent": "紧急" },
+  "map": { "title": "查找您的投票站", "yourPollingPlace": "您的投票站", "earlyVoting": "提前投票地点", "dropBoxes": "投递箱位置", "getDirections": "获取路线", "accessibility": "无障碍功能", "hours": "开放时间", "noLocationsFound": "未找到投票地点。", "loadingMap": "地图加载中…" },
+  "chat": { "title": "选举助理", "placeholder": "询问有关选举的任何问题…", "send": "发送", "thinking": "思考中…", "disclaimer": "本助理提供一般选举信息。请始终向当地选举机构核实。", "suggestedQuestions": "可以尝试询问：", "clearChat": "清除对话" },
+  "representatives": { "title": "我的代表", "subtitle": "您所在地区的民选官员", "contactInfo": "联系信息", "socialMedia": "社交媒体", "noReps": "未找到该地址的代表。" },
+  "guide": { "title": "您的选民指南", "subtitle": "您选票的个性化信息", "saveToDrive": "保存到 Google Drive", "saving": "保存中…", "saved": "已保存到 Drive！", "download": "下载 PDF" },
+  "auth": { "signIn": "使用 Google 登录", "signOut": "退出登录", "signInForCalendar": "登录以将活动添加到 Google 日历", "signInForDrive": "登录以将指南保存到 Google Drive" },
+  "errors": { "addressRequired": "请输入您的地址", "addressInvalid": "请输入有效地址", "apiUnavailable": "此功能暂时不可用。", "noApiKey": "未配置 API 密钥。", "networkError": "网络错误。请检查您的连接。" }
+}

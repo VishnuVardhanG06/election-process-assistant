@@ -1,0 +1,13 @@
+{
+  "common": { "appName": "선거 도우미", "loading": "로딩 중…", "error": "오류가 발생했습니다", "retry": "다시 시도", "close": "닫기", "back": "뒤로", "next": "다음", "submit": "제출", "cancel": "취소", "save": "저장", "learnMore": "더 알아보기", "tellMeMore": "더 알려주세요", "keepItSimple": "간단히 설명해주세요", "skipToMain": "본문으로 건너뛰기", "noResults": "결과를 찾을 수 없습니다", "optional": "선택 사항" },
+  "nav": { "home": "홈", "chat": "도우미에게 질문", "voter": "유권자 등록", "pollingPlaces": "투표소 찾기", "timeline": "선거 일정", "representatives": "나의 대표자", "guide": "유권자 안내" },
+  "home": { "hero": "스마트 선거 안내서", "heroSub": "선거 과정의 모든 단계에 대한 맞춤형 안내를 받으세요.", "startChat": "질문하기", "enterAddress": "시작하려면 주소를 입력하세요", "quickActions": "빠른 작업" },
+  "registration": { "title": "유권자 등록", "checkStatus": "등록 상태 확인", "registerNow": "투표 등록하기", "deadline": "등록 마감일: {date}", "registered": "투표 등록이 되어 있습니다!", "notRegistered": "현재 등록되어 있지 않습니다.", "unknown": "등록 상태를 확인하려면 주소를 입력하세요.", "addressLabel": "주소", "addressPlaceholder": "123 메인 스트리트, 시, 주, 우편번호", "checking": "등록 상태 확인 중…" },
+  "timeline": { "title": "선거 일정", "subtitle": "해당 지역의 주요 날짜", "addToCalendar": "캘린더에 추가", "downloadICS": ".ics 파일 다운로드", "daysLeft": "{days}일 남음", "today": "오늘", "past": "지난", "urgent": "긴급" },
+  "map": { "title": "투표소 찾기", "yourPollingPlace": "내 투표소", "earlyVoting": "조기 투표소", "dropBoxes": "투표함 위치", "getDirections": "길 찾기", "accessibility": "장애인 편의 시설", "hours": "운영 시간", "noLocationsFound": "투표소를 찾을 수 없습니다.", "loadingMap": "지도 로딩 중…" },
+  "chat": { "title": "선거 도우미", "placeholder": "선거에 대해 무엇이든 물어보세요…", "send": "전송", "thinking": "생각 중…", "disclaimer": "이 도우미는 일반적인 선거 정보를 제공합니다. 항상 지역 선거 기관에 확인하세요.", "suggestedQuestions": "이렇게 물어보세요:", "clearChat": "대화 지우기" },
+  "representatives": { "title": "나의 대표자", "subtitle": "해당 지역의 선출직 공무원", "contactInfo": "연락처 정보", "socialMedia": "소셜 미디어", "noReps": "이 주소에 대한 대표자를 찾을 수 없습니다." },
+  "guide": { "title": "유권자 안내서", "subtitle": "투표용지에 대한 맞춤형 정보", "saveToDrive": "Google Drive에 저장", "saving": "저장 중…", "saved": "Drive에 저장됨!", "download": "PDF 다운로드" },
+  "auth": { "signIn": "Google로 로그인", "signOut": "로그아웃", "signInForCalendar": "Google Calendar에 일정을 추가하려면 로그인하세요", "signInForDrive": "안내서를 Google Drive에 저장하려면 로그인하세요" },
+  "errors": { "addressRequired": "주소를 입력해주세요", "addressInvalid": "유효한 주소를 입력해주세요", "apiUnavailable": "이 기능은 현재 사용할 수 없습니다.", "noApiKey": "API 키가 구성되지 않았습니다.", "networkError": "네트워크 오류. 연결을 확인하세요." }
+}

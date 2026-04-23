@@ -1,0 +1,106 @@
+{
+  "common": {
+    "appName": "Election Process Assistant",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "learnMore": "Learn more",
+    "tellMeMore": "Tell me more",
+    "keepItSimple": "Keep it simple",
+    "skipToMain": "Skip to main content",
+    "noResults": "No results found",
+    "optional": "optional"
+  },
+  "nav": {
+    "home": "Home",
+    "chat": "Ask Assistant",
+    "voter": "Registration",
+    "pollingPlaces": "Find Polling Place",
+    "timeline": "Election Timeline",
+    "representatives": "My Representatives",
+    "guide": "Voter Guide"
+  },
+  "home": {
+    "hero": "Your Smart Election Guide",
+    "heroSub": "Get personalised, step-by-step guidance for every stage of the election process.",
+    "startChat": "Ask a Question",
+    "enterAddress": "Enter your address to get started",
+    "quickActions": "Quick Actions"
+  },
+  "registration": {
+    "title": "Voter Registration",
+    "checkStatus": "Check My Registration",
+    "registerNow": "Register to Vote",
+    "deadline": "Registration deadline: {date}",
+    "registered": "You are registered to vote!",
+    "notRegistered": "You are not currently registered.",
+    "unknown": "Enter your address to check registration status.",
+    "addressLabel": "Your address",
+    "addressPlaceholder": "123 Main St, City, State, ZIP",
+    "checking": "Checking registration status…"
+  },
+  "timeline": {
+    "title": "Election Timeline",
+    "subtitle": "Key dates and deadlines for your area",
+    "addToCalendar": "Add to Calendar",
+    "downloadICS": "Download .ics file",
+    "daysLeft": "{days} days left",
+    "today": "Today",
+    "past": "Past",
+    "urgent": "Urgent"
+  },
+  "map": {
+    "title": "Find Your Polling Place",
+    "yourPollingPlace": "Your Polling Place",
+    "earlyVoting": "Early Voting Sites",
+    "dropBoxes": "Drop Box Locations",
+    "getDirections": "Get Directions",
+    "accessibility": "Accessibility Features",
+    "hours": "Hours",
+    "noLocationsFound": "No polling locations found for this address.",
+    "loadingMap": "Loading map…"
+  },
+  "chat": {
+    "title": "Election Assistant",
+    "placeholder": "Ask me anything about elections…",
+    "send": "Send",
+    "thinking": "Thinking…",
+    "disclaimer": "This assistant provides general election information. Always verify with your local election authority.",
+    "suggestedQuestions": "Try asking:",
+    "clearChat": "Clear conversation"
+  },
+  "representatives": {
+    "title": "My Representatives",
+    "subtitle": "Elected officials for your area",
+    "contactInfo": "Contact Information",
+    "socialMedia": "Social Media",
+    "noReps": "No representatives found for this address."
+  },
+  "guide": {
+    "title": "Your Voter Guide",
+    "subtitle": "Personalized information for your ballot",
+    "saveToDrive": "Save to Google Drive",
+    "saving": "Saving…",
+    "saved": "Saved to Drive!",
+    "download": "Download PDF"
+  },
+  "auth": {
+    "signIn": "Sign in with Google",
+    "signOut": "Sign out",
+    "signInForCalendar": "Sign in to add events to your Google Calendar",
+    "signInForDrive": "Sign in to save your voter guide to Google Drive"
+  },
+  "errors": {
+    "addressRequired": "Please enter your address",
+    "addressInvalid": "Please enter a valid address",
+    "apiUnavailable": "This feature is currently unavailable. Please try again later.",
+    "noApiKey": "API key not configured. Add your key to .env.local to enable this feature.",
+    "networkError": "Network error. Please check your connection."
+  }
+}
