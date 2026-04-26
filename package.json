@@ -32,7 +32,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@netlify/next": "^1.4.9",
     "@playwright/test": "^1.45.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
