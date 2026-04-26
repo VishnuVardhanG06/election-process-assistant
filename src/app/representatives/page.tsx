@@ -185,7 +185,7 @@ export default function RepresentativesPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
           {federal.length > 0 && (
             <section>
-              <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "var(--space-4)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "var(--text-xs)" }}>
+              <h2 style={{ fontSize: "var(--text-xs)", marginBottom: "var(--space-4)", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 🇺🇸 Federal
               </h2>
               <div className="reps-grid">{federal.map((r, i) => <RepCard key={i} rep={r} />)}</div>

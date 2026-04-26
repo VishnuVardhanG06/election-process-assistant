@@ -60,7 +60,7 @@ export function initMap(
       { featureType: "poi", elementType: "geometry", stylers: [{ color: "#111d35" }] },
       { featureType: "transit", elementType: "geometry", stylers: [{ color: "#111d35" }] },
     ],
-  });
+  } as google.maps.MapOptions & { mapId?: string });
 }
 
 /**
@@ -70,7 +70,8 @@ export function createPollingMarker(
   map: google.maps.Map,
   place: PollingPlace,
   onClick?: (place: PollingPlace) => void
-): google.maps.marker.AdvancedMarkerElement | null {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any | null {
   if (!place.coordinates) return null;
 
   const pinEl = document.createElement("div");
@@ -88,7 +89,8 @@ export function createPollingMarker(
     transition: transform 0.2s ease;
   `;
 
-  const marker = new google.maps.marker.AdvancedMarkerElement({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const marker = new (google.maps as any).marker.AdvancedMarkerElement({
     map,
     position: place.coordinates,
     title: place.name,
@@ -111,7 +113,8 @@ export function addMarkersAndFit(
   onClick?: (place: PollingPlace) => void
 ): void {
   const bounds = new google.maps.LatLngBounds();
-  const markers: (google.maps.marker.AdvancedMarkerElement | null)[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markers: any[] = [];
 
   for (const place of places) {
     const marker = createPollingMarker(map, place, onClick);
@@ -120,7 +123,7 @@ export function addMarkersAndFit(
   }
 
   if (markers.filter(Boolean).length > 0) {
-    map.fitBounds(bounds, { padding: 60 });
+    map.fitBounds(bounds, 60);
     if (markers.length === 1 && places[0].coordinates) {
       map.setCenter(places[0].coordinates);
       map.setZoom(15);
@@ -148,13 +151,14 @@ export async function renderDirections(
   directionsRenderer.setMap(map);
 
   try {
-    const result = await directionsService.route({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (directionsService as any).route({
       origin: from,
       destination,
       travelMode: google.maps.TravelMode.DRIVING,
     });
     directionsRenderer.setDirections(result);
-    return result;
+    return result as google.maps.DirectionsResult;
   } catch {
     return null;
   }
@@ -168,8 +172,10 @@ export async function geocodeAddress(
 ): Promise<{ lat: number; lng: number } | null> {
   const geocoder = new google.maps.Geocoder();
   try {
-    const { results } = await geocoder.geocode({ address });
-    if (results[0]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response: any = await (geocoder as any).geocode({ address });
+    const results = response.results || response;
+    if (results && results[0]) {
       return {
         lat: results[0].geometry.location.lat(),
         lng: results[0].geometry.location.lng(),
