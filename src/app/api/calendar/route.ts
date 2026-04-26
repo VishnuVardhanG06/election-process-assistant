@@ -25,7 +25,12 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid deadline data" }, { status: 400 });
 
   // Demo mode: no auth required when Google OAuth is not configured
-  const session = await auth().catch(() => null);
+  let session = null;
+  try {
+    session = await auth();
+  } catch {
+    // Auth not available, continue in demo mode
+  }
   const accessToken = (session as any)?.accessToken;
 
   if (!accessToken) {
@@ -49,4 +54,3 @@ export async function POST(request: NextRequest) {
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 500 });
   return NextResponse.json({ ok: true, data: result.data });
 }
-
