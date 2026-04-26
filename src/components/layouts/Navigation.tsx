@@ -1,22 +1,13 @@
 "use client";
 
-import React from "react";
+import { usePreferences } from "@/contexts/PreferencesContext";
+import { useTranslation } from "@/hooks/useTranslation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { usePreferences } from "@/contexts/PreferencesContext";
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from "@/constants/config";
+import { SUPPORTED_LOCALES } from "@/constants/config";
 import { SupportedLocale } from "@/types";
-
-const NAV_LINKS = [
-  { href: "/", label: "Home", icon: "🏠" },
-  { href: "/chat", label: "Ask Assistant", icon: "💬" },
-  { href: "/voter", label: "Registration", icon: "📝" },
-  { href: "/polling-places", label: "Polling Places", icon: "📍" },
-  { href: "/timeline", label: "Timeline", icon: "📅" },
-  { href: "/representatives", label: "Representatives", icon: "🏛️" },
-  { href: "/guide", label: "Voter Guide", icon: "📋" },
-];
+import { useEffect } from "react";
 
 const LOCALE_LABELS: Record<SupportedLocale, string> = {
   en: "English",
@@ -27,13 +18,39 @@ const LOCALE_LABELS: Record<SupportedLocale, string> = {
   fr: "Français",
 };
 
+function useNavLinks() {
+  const { t } = useTranslation();
+  return [
+    { href: "/", label: t("nav.home"), icon: "🏠" },
+    { href: "/chat", label: t("nav.chat"), icon: "💬" },
+    { href: "/voter", label: t("nav.voter"), icon: "📝" },
+    { href: "/polling-places", label: t("nav.pollingPlaces"), icon: "📍" },
+    { href: "/timeline", label: t("nav.timeline"), icon: "📅" },
+    { href: "/representatives", label: t("nav.representatives"), icon: "🏛️" },
+    { href: "/guide", label: t("nav.guide"), icon: "📋" },
+  ];
+}
+
+/** Syncs <html lang="..."> with the selected language */
+function HtmlLangSync() {
+  const { preferences } = usePreferences();
+  useEffect(() => {
+    document.documentElement.lang = preferences.language ?? "en";
+  }, [preferences.language]);
+  return null;
+}
+
 export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { preferences, setLanguage } = usePreferences();
+  const { t } = useTranslation();
+  const navLinks = useNavLinks();
 
   return (
     <nav className="sidebar" aria-label="Main navigation">
+      <HtmlLangSync />
+
       {/* Logo */}
       <div style={{ marginBottom: "var(--space-8)" }}>
         <Link href="/" style={{ textDecoration: "none" }}>
@@ -53,7 +70,7 @@ export function Sidebar() {
 
       {/* Nav links */}
       <ul role="list" style={{ flex: 1, listStyle: "none", display: "flex", flexDirection: "column", gap: "var(--space-1)" }}>
-        {NAV_LINKS.map((link) => {
+        {navLinks.map((link) => {
           const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
           return (
             <li key={link.href}>
@@ -73,13 +90,14 @@ export function Sidebar() {
       {/* Language selector */}
       <div style={{ marginTop: "var(--space-6)", borderTop: "1px solid var(--color-border)", paddingTop: "var(--space-6)" }}>
         <label htmlFor="lang-select" className="input-label" style={{ marginBottom: "var(--space-2)", display: "block" }}>
-          🌐 Language
+          🌐 {t("common.language") || "Language"}
         </label>
         <select
           id="lang-select"
           className="lang-select"
           value={preferences.language}
           onChange={(e) => setLanguage(e.target.value as SupportedLocale)}
+          aria-label="Select language"
           style={{ width: "100%" }}
         >
           {SUPPORTED_LOCALES.map((l) => (
@@ -93,15 +111,15 @@ export function Sidebar() {
         {session ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
             <p style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>
-              Signed in as {session.user?.name}
+              {t("auth.signedInAs") || "Signed in as"} {session.user?.name}
             </p>
             <button className="btn btn-ghost btn-sm" onClick={() => signOut()} style={{ width: "100%" }}>
-              Sign Out
+              {t("auth.signOut")}
             </button>
           </div>
         ) : (
           <button className="btn btn-secondary btn-sm" onClick={() => signIn("google")} style={{ width: "100%" }}>
-            🔑 Sign in for Calendar & Drive
+            🔑 {t("auth.signIn")}
           </button>
         )}
       </div>
@@ -111,7 +129,8 @@ export function Sidebar() {
 
 export function BottomNav() {
   const pathname = usePathname();
-  const BOTTOM_LINKS = NAV_LINKS.slice(0, 5);
+  const navLinks = useNavLinks();
+  const BOTTOM_LINKS = navLinks.slice(0, 5);
 
   return (
     <nav className="bottom-nav" aria-label="Mobile navigation">
@@ -135,12 +154,13 @@ export function BottomNav() {
 }
 
 export function Header() {
+  const { t } = useTranslation();
   return (
     <header className="header">
       <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
         <span aria-hidden="true" style={{ fontSize: "1.3rem" }}>🗳️</span>
         <span style={{ fontWeight: "var(--font-bold)", fontSize: "var(--text-sm)", color: "var(--color-text-primary)" }}>
-          Election Assistant
+          {t("common.appName")}
         </span>
       </Link>
     </header>

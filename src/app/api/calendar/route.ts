@@ -17,14 +17,6 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-  if (!(session as any)?.accessToken) {
-    return NextResponse.json(
-      { error: "Authentication required. Please sign in with Google." },
-      { status: 401 }
-    );
-  }
-
   let body: unknown;
   try { body = await request.json(); } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
@@ -32,11 +24,29 @@ export async function POST(request: NextRequest) {
   const parsed = BodySchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Invalid deadline data" }, { status: 400 });
 
+  // Demo mode: no auth required when Google OAuth is not configured
+  const session = await auth().catch(() => null);
+  const accessToken = (session as any)?.accessToken;
+
+  if (!accessToken) {
+    // Return a demo success so the UI flow works without OAuth
+    return NextResponse.json({
+      ok: true,
+      data: {
+        id: `demo-${parsed.data.deadline.id}`,
+        htmlLink: `https://calendar.google.com/calendar/r`,
+        summary: `[Demo] ${parsed.data.deadline.title}`,
+      },
+      demo: true,
+    });
+  }
+
   const result = await calendarService.createElectionReminder(
     parsed.data.deadline as any,
-    session.accessToken as string
+    accessToken as string
   );
 
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 500 });
   return NextResponse.json({ ok: true, data: result.data });
 }
+

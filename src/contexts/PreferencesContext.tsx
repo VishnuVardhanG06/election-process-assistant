@@ -43,7 +43,17 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Persist when preferences change (only if consent given)
+  // Persist language immediately (no consent needed for language choice)
+  // Other preferences only persist when consent is given
+  useEffect(() => {
+    try {
+      const current = localStorage.getItem("epa_prefs");
+      const base = current ? (JSON.parse(current) as UserPreferences) : {};
+      localStorage.setItem("epa_prefs", JSON.stringify({ ...base, language: preferences.language }));
+    } catch {}
+  }, [preferences.language]);
+
+  // Persist full preferences when consent given
   useEffect(() => {
     if (preferences.hasConsent) {
       try {

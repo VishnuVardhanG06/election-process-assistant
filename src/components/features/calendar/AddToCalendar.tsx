@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSession, signIn } from "next-auth/react";
 import { ElectionDeadline } from "@/types";
 import { Button } from "@/components/common/Button";
 import { Modal } from "@/components/common/Modal";
@@ -9,14 +8,13 @@ import { LiveRegion } from "@/components/common/Accessibility";
 
 interface AddToCalendarProps {
   deadline: ElectionDeadline;
-  deadlines?: ElectionDeadline[]; // For bulk download
+  deadlines?: ElectionDeadline[];
 }
 
 export function AddToCalendar({ deadline, deadlines }: AddToCalendarProps) {
-  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; link?: string; error?: string } | null>(null);
+  const [result, setResult] = useState<{ success: boolean; link?: string; error?: string; demo?: boolean } | null>(null);
   const [statusMsg, setStatusMsg] = useState("");
 
   const addToGoogleCalendar = async () => {
@@ -30,8 +28,8 @@ export function AddToCalendar({ deadline, deadlines }: AddToCalendarProps) {
       });
       const data = await res.json();
       if (res.ok && data.ok) {
-        setResult({ success: true, link: data.data.htmlLink });
-        setStatusMsg("Added to Google Calendar successfully");
+        setResult({ success: true, link: data.data?.htmlLink, demo: data.demo });
+        setStatusMsg(data.demo ? "Demo: event added (not real)" : "Added to Google Calendar successfully");
       } else {
         setResult({ success: false, error: data.error });
         setStatusMsg("Failed to add to calendar");
@@ -98,8 +96,16 @@ export function AddToCalendar({ deadline, deadlines }: AddToCalendarProps) {
           <div className="status-card registered" style={{ marginBottom: "var(--space-4)" }}>
             <span>✅</span>
             <div>
-              <p style={{ fontWeight: "var(--font-semibold)" }}>Added to Google Calendar!</p>
-              {result.link && <a href={result.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: "var(--text-sm)" }}>View Event ↗</a>}
+              <p style={{ fontWeight: "var(--font-semibold)" }}>
+                {result.demo ? "Added! (Demo Mode — no real event created)" : "Added to Google Calendar!"}
+              </p>
+              {result.demo ? (
+                <p style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", marginTop: "var(--space-1)" }}>
+                  Add your Google OAuth keys in .env.local to create real calendar events.
+                </p>
+              ) : (
+                result.link && <a href={result.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: "var(--text-sm)" }}>View Event ↗</a>
+              )}
             </div>
           </div>
         )}
@@ -112,20 +118,14 @@ export function AddToCalendar({ deadline, deadlines }: AddToCalendarProps) {
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-          {session ? (
-            <Button
-              variant="primary"
-              onClick={addToGoogleCalendar}
-              isLoading={isLoading}
-              leftIcon="📆"
-            >
-              Add to My Google Calendar
-            </Button>
-          ) : (
-            <Button variant="primary" onClick={() => signIn("google")} leftIcon="🔑">
-              Sign in with Google to Add Event
-            </Button>
-          )}
+          <Button
+            variant="primary"
+            onClick={addToGoogleCalendar}
+            isLoading={isLoading}
+            leftIcon="📆"
+          >
+            Add to My Google Calendar
+          </Button>
 
           <Button
             variant="ghost"

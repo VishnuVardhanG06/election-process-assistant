@@ -1,21 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AddressForm } from "@/components/features/voter/AddressForm";
 import { PollingPlaceMap } from "@/components/features/map/PollingPlaceMap";
 import { PollingPlace, ApiResult } from "@/types";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
+
+const DEMO_ADDRESS = "1234 Maple Street, Los Angeles, CA 90210";
+
+function DemoBanner({ isDemo }: { isDemo: boolean }) {
+  if (!isDemo) return null;
+  return (
+    <div style={{
+      background: "linear-gradient(135deg, rgba(255,193,7,0.15), rgba(255,152,0,0.1))",
+      border: "1px solid rgba(255,193,7,0.4)",
+      borderRadius: "var(--radius-lg)",
+      padding: "var(--space-3) var(--space-5)",
+      marginBottom: "var(--space-5)",
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--space-3)",
+      fontSize: "var(--text-sm)",
+    }}>
+      <span style={{ fontSize: "1.1rem" }}>📌</span>
+      <span>
+        <strong>Demo Mode</strong> — Showing 4 sample locations near <em>Springfield, CA</em>.{" "}
+        Enter your real address to find your actual polling places.
+      </span>
+    </div>
+  );
+}
 
 export default function PollingPlacesPage() {
   const [places, setPlaces] = useState<PollingPlace[]>([]);
   const [submittedAddress, setSubmittedAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDemo, setIsDemo] = useState(true);
 
-  const handleSearch = async (address: string) => {
+  const fetchPlaces = async (address: string) => {
     setIsLoading(true);
     setError(null);
     setSubmittedAddress(address);
+    setIsDemo(address === DEMO_ADDRESS);
 
     try {
       const res = await fetch("/api/polling-places", {
@@ -38,16 +65,24 @@ export default function PollingPlacesPage() {
     }
   };
 
+  // Auto-load demo data on mount
+  useEffect(() => {
+    fetchPlaces(DEMO_ADDRESS);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="container page-padding">
       <h1 className="section-heading">Find Your Polling Place</h1>
       <p className="section-sub">
-        Locate polling places, early voting sites, and drop boxes near you with Google Maps directions.
+        Locate polling places, early voting sites, and drop boxes near you.
       </p>
+
+      <DemoBanner isDemo={isDemo} />
 
       <div className="glass-card" style={{ padding: "var(--space-6)", marginBottom: "var(--space-6)" }}>
         <AddressForm
-          onSubmit={handleSearch}
+          onSubmit={fetchPlaces}
           isLoading={isLoading}
           label="Your Registered Address"
           placeholder="123 Main St, City, State ZIP"
@@ -71,7 +106,6 @@ export default function PollingPlacesPage() {
         <PollingPlaceMap places={places} userAddress={submittedAddress} />
       )}
 
-      {/* Legend */}
       {places.length > 0 && (
         <div className="glass-card-sm" style={{ padding: "var(--space-4)", marginTop: "var(--space-6)", display: "flex", gap: "var(--space-6)", flexWrap: "wrap" }}>
           <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>

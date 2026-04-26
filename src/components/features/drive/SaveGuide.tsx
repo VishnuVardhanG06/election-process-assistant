@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSession, signIn } from "next-auth/react";
 import { VoterInfo } from "@/types";
 import { Button } from "@/components/common/Button";
 import { LiveRegion } from "@/components/common/Accessibility";
@@ -12,14 +11,11 @@ interface SaveGuideProps {
 }
 
 export function SaveGuide({ voterInfo, address }: SaveGuideProps) {
-  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; link?: string; error?: string } | null>(null);
+  const [result, setResult] = useState<{ success: boolean; link?: string; error?: string; demo?: boolean } | null>(null);
   const [statusMsg, setStatusMsg] = useState("");
 
   const handleSaveToDrive = async () => {
-    if (!session) { signIn("google"); return; }
-
     setIsLoading(true);
     setStatusMsg("Saving voter guide to Google Drive…");
     setResult(null);
@@ -36,8 +32,8 @@ export function SaveGuide({ voterInfo, address }: SaveGuideProps) {
       const data = await res.json();
 
       if (res.ok && data.ok) {
-        setResult({ success: true, link: data.data.webViewLink });
-        setStatusMsg("Voter guide saved to Google Drive successfully");
+        setResult({ success: true, link: data.data.webViewLink, demo: data.demo });
+        setStatusMsg(data.demo ? "Demo: guide saved (not real)" : "Voter guide saved to Google Drive successfully");
       } else {
         setResult({ success: false, error: data.error });
         setStatusMsg("Failed to save to Google Drive");
@@ -75,11 +71,19 @@ export function SaveGuide({ voterInfo, address }: SaveGuideProps) {
         <div className="status-card registered">
           <span>✅</span>
           <div>
-            <p style={{ fontWeight: "var(--font-semibold)" }}>Saved to Google Drive!</p>
-            {result.link && (
-              <a href={result.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: "var(--text-sm)" }}>
-                Open in Drive ↗
-              </a>
+            <p style={{ fontWeight: "var(--font-semibold)" }}>
+              {result.demo ? "Saved! (Demo Mode — not actually saved to Drive)" : "Saved to Google Drive!"}
+            </p>
+            {result.demo ? (
+              <p style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", marginTop: "var(--space-1)" }}>
+                Add your Google OAuth keys in .env.local to save real files to Drive.
+              </p>
+            ) : (
+              result.link && (
+                <a href={result.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: "var(--text-sm)" }}>
+                  Open in Drive ↗
+                </a>
+              )
             )}
           </div>
         </div>
@@ -92,15 +96,9 @@ export function SaveGuide({ voterInfo, address }: SaveGuideProps) {
         </div>
       )}
 
-      {session ? (
-        <Button variant="gold" onClick={handleSaveToDrive} isLoading={isLoading} leftIcon="💾">
-          Save to Google Drive
-        </Button>
-      ) : (
-        <Button variant="secondary" onClick={() => signIn("google")} leftIcon="🔑">
-          Sign in to Save to Drive
-        </Button>
-      )}
+      <Button variant="gold" onClick={handleSaveToDrive} isLoading={isLoading} leftIcon="💾">
+        Save to Google Drive
+      </Button>
     </div>
   );
 }

@@ -106,14 +106,16 @@ export function PollingPlaceMap({ places, userAddress }: PollingPlaceMapProps) {
     <section aria-labelledby="map-heading" style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
       <h2 id="map-heading" className="sr-only">Polling Locations Map</h2>
 
-      {/* Map */}
+      {/* Map — OpenStreetMap fallback when no API key */}
       <div className="map-container" aria-label="Map showing polling place locations">
         {apiKeyMissing && (
-          <div className="flex-center" style={{ height: "100%", flexDirection: "column", gap: "var(--space-3)", color: "var(--color-text-muted)" }}>
-            <p style={{ fontSize: "2rem" }}>🗺️</p>
-            <p style={{ fontSize: "var(--text-sm)" }}>Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to enable the map.</p>
-            <p style={{ fontSize: "var(--text-xs)" }}>Locations are still listed below.</p>
-          </div>
+          <iframe
+            title="Polling places map"
+            src={`https://www.openstreetmap.org/export/embed.html?bbox=-118.35%2C34.00%2C-118.15%2C34.10&layer=mapnik&marker=34.0522%2C-118.2437`}
+            style={{ width: "100%", height: "100%", border: "none", borderRadius: "var(--radius-lg)", filter: "invert(90%) hue-rotate(180deg)" }}
+            loading="lazy"
+            aria-hidden="false"
+          />
         )}
         {mapsLoading && !apiKeyMissing && <LoadingSpinner label="Loading map…" fullPage />}
         {mapsError && (
@@ -128,26 +130,41 @@ export function PollingPlaceMap({ places, userAddress }: PollingPlaceMapProps) {
         />
       </div>
 
-      {/* Directions button */}
-      {userAddress && places[selectedIdx] && (
-        <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "center" }}>
-          <Button
-            variant="primary"
-            onClick={handleGetDirections}
-            isLoading={directionsLoading}
-            leftIcon="🗺️"
-          >
-            Get Directions to {places[selectedIdx].name}
-          </Button>
-          {directionsShown && (
+      {/* Directions */}
+      {places[selectedIdx] && (
+        <div style={{ display: "flex", gap: "var(--space-3)", alignItems: "center", flexWrap: "wrap" }}>
+          {apiKeyMissing ? (
             <a
-              href={`https://maps.google.com/?q=${encodeURIComponent(places[selectedIdx].address + " " + places[selectedIdx].city)}`}
+              href={`https://maps.google.com/?q=${encodeURIComponent(
+                `${places[selectedIdx].address}, ${places[selectedIdx].city}, ${places[selectedIdx].state} ${places[selectedIdx].zip}`
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-ghost btn-sm"
+              className="btn btn-primary"
             >
-              Open in Google Maps ↗
+              🗺️ Open in Google Maps ↗
             </a>
+          ) : userAddress && (
+            <>
+              <Button
+                variant="primary"
+                onClick={handleGetDirections}
+                isLoading={directionsLoading}
+                leftIcon="🗺️"
+              >
+                Get Directions to {places[selectedIdx].name}
+              </Button>
+              {directionsShown && (
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(places[selectedIdx].address + " " + places[selectedIdx].city)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-ghost btn-sm"
+                >
+                  Open in Google Maps ↗
+                </a>
+              )}
+            </>
           )}
         </div>
       )}
