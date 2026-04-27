@@ -4,7 +4,7 @@ A production-grade, **AI-powered election guide** built with Next.js 16. Helps v
 
 **🟢 Fully functional in Demo Mode — no API keys required.** All pages auto-load rich sample data on first visit. Enter your real address at any time to fetch live data.
 
-🚀 **Live Demo:** [election-process-assistant-production.up.railway.app](https://election-process-assistant-production.up.railway.app)
+🚀 **Live Demo:** [merry-pika-677ca4.netlify.app](https://69ef64312e598216e0c8caab--merry-pika-677ca4.netlify.app/)
 
 ---
 
@@ -125,21 +125,21 @@ src/
 
 ---
 
-## 🚢 Deployment (Railway)
+## 🚢 Deployment (Netlify)
 
-The project is pre-configured for Railway via `railway.json`.
+The project is pre-configured for Netlify via `netlify.toml`.
 
 ### Quick Deploy
 1. Fork or push to GitHub
-2. Connect to [Railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
-3. Railway auto-detects the Next.js project
+2. Connect to [Netlify.com](https://netlify.com) → **Add new site** → **Import an existing project**
+3. Select your GitHub repo — Netlify auto-detects Next.js
 
-### Required Environment Variables on Railway
+### Required Environment Variables on Netlify
 
 | Variable | Value |
-|----------|-------|
+|----------| ------|
 | `NEXTAUTH_SECRET` | Any random string (e.g. `openssl rand -base64 32`) |
-| `NEXTAUTH_URL` | Your Railway domain (e.g. `https://your-app.up.railway.app`) |
+| `NEXTAUTH_URL` | Your Netlify domain (e.g. `https://your-app.netlify.app`) |
 
 Optional (for live data features):
 
@@ -150,11 +150,11 @@ Optional (for live data features):
 | `GOOGLE_CLIENT_ID` | Google OAuth sign-in |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth sign-in |
 
-### How Railway Builds
-- **Install:** Railpack auto-runs `npm ci` (`.npmrc` provides `legacy-peer-deps=true`)
-- **Build:** `npm run build` (set in `railway.json`)
-- **Start:** `npm start` → `next start -H 0.0.0.0 -p ${PORT:-3000}`
-- **Node version:** 22 (via Railpack)
+### How Netlify Builds
+- **Plugin:** `@netlify/plugin-nextjs` handles SSR and API routes automatically
+- **Install:** `npm install --legacy-peer-deps` (set via `NPM_FLAGS` in `netlify.toml`)
+- **Build:** `npm run build`
+- **Node version:** 22 (set via `NODE_VERSION` in `netlify.toml`)
 
 ---
 
