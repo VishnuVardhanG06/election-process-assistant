@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { driveService } from "@/services/google-drive";
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth, type ExtendedSession } from "@/app/api/auth/[...nextauth]/route";
 
 const BodySchema = z.object({
   content: z.string().min(1).max(100_000),
@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid data" }, { status: 400 });
 
   // Demo mode: no auth required when Google OAuth is not configured
-  const session = await auth().catch(() => null);
-  const accessToken = (session as any)?.accessToken;
+  const session = (await auth().catch(() => null)) as ExtendedSession | null;
+  const accessToken = session?.accessToken;
 
   if (!accessToken) {
     // Return a demo success so the UI flow works without OAuth

@@ -6,6 +6,24 @@
 import { Loader } from "@googlemaps/js-api-loader";
 import { PollingPlace } from "@/types";
 
+// ─── Type shim for AdvancedMarkerElement (not yet in @types/google.maps stable) ─
+interface AdvancedMarkerElement {
+  map: google.maps.Map | null;
+  position: google.maps.LatLngLiteral | null;
+  title: string;
+  content: HTMLElement;
+  addListener(event: string, handler: () => void): void;
+}
+
+interface GoogleMapsMarkerLibrary {
+  AdvancedMarkerElement: new (opts: {
+    map: google.maps.Map;
+    position: google.maps.LatLngLiteral;
+    title: string;
+    content: HTMLElement;
+  }) => AdvancedMarkerElement;
+}
+
 let loaderInstance: Loader | null = null;
 let mapsLoaded = false;
 
@@ -41,7 +59,7 @@ export function initMap(
   center: { lat: number; lng: number },
   zoom = 13
 ): google.maps.Map {
-  return new google.maps.Map(container, {
+  const options: google.maps.MapOptions & { mapId?: string } = {
     center,
     zoom,
     mapId: "election-assistant-map",
@@ -60,7 +78,8 @@ export function initMap(
       { featureType: "poi", elementType: "geometry", stylers: [{ color: "#111d35" }] },
       { featureType: "transit", elementType: "geometry", stylers: [{ color: "#111d35" }] },
     ],
-  } as google.maps.MapOptions & { mapId?: string });
+  };
+  return new google.maps.Map(container, options);
 }
 
 /**
@@ -70,8 +89,7 @@ export function createPollingMarker(
   map: google.maps.Map,
   place: PollingPlace,
   onClick?: (place: PollingPlace) => void
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any | null {
+): AdvancedMarkerElement | null {
   if (!place.coordinates) return null;
 
   const pinEl = document.createElement("div");
@@ -89,8 +107,8 @@ export function createPollingMarker(
     transition: transform 0.2s ease;
   `;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const marker = new (google.maps as any).marker.AdvancedMarkerElement({
+  const markerLib = (google.maps as unknown as { marker: GoogleMapsMarkerLibrary }).marker;
+  const marker = new markerLib.AdvancedMarkerElement({
     map,
     position: place.coordinates,
     title: place.name,
@@ -113,8 +131,7 @@ export function addMarkersAndFit(
   onClick?: (place: PollingPlace) => void
 ): void {
   const bounds = new google.maps.LatLngBounds();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const markers: any[] = [];
+  const markers: (AdvancedMarkerElement | null)[] = [];
 
   for (const place of places) {
     const marker = createPollingMarker(map, place, onClick);
@@ -151,36 +168,54 @@ export async function renderDirections(
   directionsRenderer.setMap(map);
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await (directionsService as any).route({
-      origin: from,
-      destination,
-      travelMode: google.maps.TravelMode.DRIVING,
+    const result = await new Promise<google.maps.DirectionsResult>((resolve, reject) => {
+      directionsService.route(
+        {
+          origin: from,
+          destination,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (response, status) => {
+          if (status === google.maps.DirectionsStatus.OK && response) {
+            resolve(response);
+          } else {
+            reject(new Error(`Directions request failed: ${status}`));
+          }
+        }
+      );
     });
     directionsRenderer.setDirections(result);
-    return result as google.maps.DirectionsResult;
+    return result;
   } catch {
     return null;
   }
 }
 
 /**
- * Geocode an address string to coordinates.
+ * Geocode an address string to lat/lng coordinates.
  */
 export async function geocodeAddress(
   address: string
 ): Promise<{ lat: number; lng: number } | null> {
   const geocoder = new google.maps.Geocoder();
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await (geocoder as any).geocode({ address });
-    const results = response.results || response;
-    if (results && results[0]) {
+    const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+      geocoder.geocode({ address }, (res, status) => {
+        if (status === google.maps.GeocoderStatus.OK && res) {
+          resolve(res);
+        } else {
+          reject(new Error(`Geocoding failed: ${status}`));
+        }
+      });
+    });
+    if (results[0]) {
       return {
         lat: results[0].geometry.location.lat(),
         lng: results[0].geometry.location.lng(),
       };
     }
-  } catch {}
+  } catch {
+    // Geocoding failed — return null
+  }
   return null;
 }

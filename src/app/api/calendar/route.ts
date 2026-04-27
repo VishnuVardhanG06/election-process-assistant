@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { calendarService } from "@/services/google-calendar";
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth, type ExtendedSession } from "@/app/api/auth/[...nextauth]/route";
+import type { ElectionDeadline } from "@/types";
 
 const BodySchema = z.object({
   deadline: z.object({
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
   } catch {
     // Auth not available, continue in demo mode
   }
-  const accessToken = (session as any)?.accessToken;
+  const accessToken = (session as ExtendedSession)?.accessToken;
 
   if (!accessToken) {
     // Return a demo success so the UI flow works without OAuth
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
   }
 
   const result = await calendarService.createElectionReminder(
-    parsed.data.deadline as any,
+    parsed.data.deadline as ElectionDeadline,
     accessToken as string
   );
 
